@@ -48,6 +48,8 @@ getRemainingBudget = () => {
 }
 renderDataForPieChart = (renderDataForPieChart) => {
     console.log(renderDataForPieChart)
+    console.log(renderDataForPieChart)
+
     const {
         departmentSummaryData
     } = this.state;
