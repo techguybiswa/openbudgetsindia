@@ -23,6 +23,7 @@ def get_department_details(department_name):
     for i in data:
         if i["Ministries/Departments"] == department_name:
             return i
+        
     return json.dumps(data)
 
 
