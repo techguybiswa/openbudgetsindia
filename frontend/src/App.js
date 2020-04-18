@@ -11,10 +11,8 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
-        Hello indiex
+      <div style={{paddingLeft: "20px", paddingRight: "20px"}}>
         <AllDepartmentsVisual/>
-        
         <DataTable/>
       </div>
     );

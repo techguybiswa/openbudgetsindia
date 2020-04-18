@@ -44,7 +44,8 @@ getRemainingBudget = () => {
         count = count + tmpValue["Percentage of Budget"]
     }
     let result = 100 - count
-    return result
+   
+    return  parseInt(result.toPrecision(3))
 }
 renderDataForPieChart = (renderDataForPieChart) => {
     console.log(renderDataForPieChart)
@@ -91,7 +92,6 @@ renderDataForPieChart = (renderDataForPieChart) => {
    
   };
   render() {
-    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
     return (
       <div>

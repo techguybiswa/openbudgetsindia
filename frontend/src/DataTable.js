@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Tag, Button } from "antd";
-import { Select, Typography, Divider } from "antd";
-import DataVisual from './DataVisual'
+import { Select, Typography, Divider, Row, Col } from "antd";
+import DataVisual from "./DataVisual";
 const { Option } = Select;
 const { Title } = Typography;
 
@@ -57,12 +57,12 @@ class DataTable extends React.Component {
     return departmentData;
   };
   filterTable = async () => {
-    if(this.state.filterValues.length == 0){
-      return 
+    if (this.state.filterValues.length == 0) {
+      return;
     }
     this.setState({
-      filterStatus:  "Filtering..."
-    })
+      filterStatus: "Filtering...",
+    });
     let departmentData = await this.fetchAllDepartmentDetails();
     this.setState({
       departmentData,
@@ -74,10 +74,8 @@ class DataTable extends React.Component {
     });
     this.setState({
       departmentData: sortedValue,
-      filterStatus:  "Filter"
-
+      filterStatus: "Filter",
     });
-    
   };
   clearFilter = async () => {
     let departmentData = await this.fetchAllDepartmentDetails();
@@ -88,42 +86,39 @@ class DataTable extends React.Component {
     });
   };
   showDataModal = (record) => {
-    console.log(record)
+    console.log(record);
 
-    const chartData =  [
+    const chartData = [
       {
         name: "Actual 2018-2019 Total",
         Amount: record["Actual 2018-2019 Total"],
       },
       {
         name: "Budget 2019-2020 Total",
-       Amount: record["Budget 2019-2020 Total"]
+        Amount: record["Budget 2019-2020 Total"],
       },
       {
         name: "Revised 2019-2020 Total",
         Amount: record["Revised 2019-2020 Total"],
-    
       },
       {
         name: "Budget 2020-2021 Total",
-       Amount: record["Budget 2020-2021 Total"]
+        Amount: record["Budget 2020-2021 Total"],
       },
-      
-     
-    ] ;
+    ];
 
     this.setState({
       dataModalVisible: true,
       rowRecord: record,
-      chartData
-    })
-  }
+      chartData,
+    });
+  };
   hideDataModal = () => {
     this.setState({
       dataModalVisible: false,
       rowRecord: null,
-    })
-  }
+    });
+  };
   componentDidMount = async () => {
     let departmentData = await this.fetchAllDepartmentDetails();
     console.log("departmentData", departmentData);
@@ -136,11 +131,13 @@ class DataTable extends React.Component {
         title: "Ministries / Departments",
         dataIndex: "Ministries/Departments",
         key: "Ministries/Departments",
+        width: 250,
       },
       {
         title: "Detailed Head of Expenditure",
         dataIndex: "Detailed Head of Expenditure",
         key: "Detailed Head of Expenditure",
+        width: 300,
       },
       {
         title: "Actual 2018-2019 Total",
@@ -186,8 +183,8 @@ class DataTable extends React.Component {
         title: "Visualization",
         key: "Budget Estimates 2020-2021 Total",
         render: (record) => (
-        <Button onClick={() => this.showDataModal(record)}>Show More</Button>
-        )
+          <Button onClick={() => this.showDataModal(record)}>Show More</Button>
+        ),
       },
     ];
 
@@ -211,13 +208,24 @@ class DataTable extends React.Component {
             value={this.state.filterValues}
             onChange={this.handleChangeOfFilter}
             options={this.state.filterObject}
-           
           />
           <Button onClick={this.filterTable}>{this.state.filterStatus}</Button>
           <Button onClick={this.clearFilter}>Clear Filter</Button>
-
-          <Table columns={columns} dataSource={departmentData} />
-          <DataVisual visible={this.state.dataModalVisible} hideDataModal={this.hideDataModal} record={this.state.rowRecord} chartData={this.state.chartData}/>
+          <Row>
+            <Col span={24}>
+              <Table
+                columns={columns}
+                dataSource={departmentData}
+                size="small"
+              />
+            </Col>
+          </Row>
+          <DataVisual
+            visible={this.state.dataModalVisible}
+            hideDataModal={this.hideDataModal}
+            record={this.state.rowRecord}
+            chartData={this.state.chartData}
+          />
         </div>
       </div>
     );
