@@ -1,6 +1,6 @@
 import React from "react";
-import { Table, Tag, Button, Row, Col } from "antd";
-import { Select, Typography, Divider, Modal, Statistic } from "antd";
+import { Table, Tag, Button, Row, Col, Divider } from "antd";
+import { Select, Typography, Modal, Statistic } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 import DepartmentSummaryVisual from "./DepartmentSummaryVisual";
 import DepartmentVisual from "./DepartmentVisual";
@@ -333,8 +333,16 @@ class AllDepartmentsVisual extends React.Component {
       <div>
         <Row>
           <Col span={12}>
-            <h1 style={{fontFamily : "Open Sans" , fontWeight: "font-weight", color: "#515B5E"}}>Government budget over the past years (2016-2021)</h1>
-            <br/>
+            <h1
+              style={{
+                fontFamily: "Open Sans",
+                fontWeight: "font-weight",
+                color: "#515B5E",
+              }}
+            >
+              Expenditure Budget over the past years (2016-2021)
+            </h1>
+            <br />
             <AreaChart
               width={500}
               height={200}
@@ -362,10 +370,22 @@ class AllDepartmentsVisual extends React.Component {
 
             {this.state.totalBudget != null ? (
               <div>
-                <h3 style={{fontFamily : "Open Sans" , fontWeight: "font-weight", color: "#515B5E"}}>
+                <h3
+                  style={{
+                    fontFamily: "Open Sans",
+                    fontWeight: "font-weight",
+                    color: "#515B5E",
+                  }}
+                >
                   <u>Brief Insights:</u>
                 </h3>
-                <h4 style={{fontFamily : "Open Sans" , fontWeight: "font-weight", color: "#515B5E"}}>
+                <h4
+                  style={{
+                    fontFamily: "Open Sans",
+                    fontWeight: "font-weight",
+                    color: "#515B5E",
+                  }}
+                >
                   > This year the budget is INR{" "}
                   {this.state.totalBudget[
                     "Budget Estimates 2020-2021 Total"
@@ -373,7 +393,13 @@ class AllDepartmentsVisual extends React.Component {
                   crores
                 </h4>
 
-                <h4 style={{fontFamily : "Open Sans" , fontWeight: "font-weight", color: "#515B5E"}}>
+                <h4
+                  style={{
+                    fontFamily: "Open Sans",
+                    fontWeight: "font-weight",
+                    color: "#515B5E",
+                  }}
+                >
                   > The budget of 2020-21 {this.getCurrentYearSummary()} as
                   compared to the past year
                 </h4>
@@ -384,8 +410,16 @@ class AllDepartmentsVisual extends React.Component {
             )}
           </Col>
           <Col span={12}>
-            <h1 style={{fontFamily : "Open Sans" , fontWeight: "font-weight", color: "#515B5E"}}>How government spends every 100 INR from the budget?</h1>
-            <PieChart width={400} height={400} style={{marginTop: "-70px"}}>
+            <h1
+              style={{
+                fontFamily: "Open Sans",
+                fontWeight: "font-weight",
+                color: "#515B5E",
+              }}
+            >
+              How government spends every 100 INR from the budget?
+            </h1>
+            <PieChart width={400} height={400} style={{ marginTop: "-70px" }}>
               <Pie
                 dataKey="value"
                 isAnimationActive={true}
@@ -400,43 +434,83 @@ class AllDepartmentsVisual extends React.Component {
             </PieChart>
           </Col>
         </Row>
+        <Divider />
+
         {this.state.barChartData != null ? (
-          <Row>
-            <Col span={12}>
-              <BarChart
-                width={1150}
-                height={300}
-                data={this.state.barChartData}
-                margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="9 9" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend />
-                <ReferenceLine y={0} stroke="#000" />
-                {/* <Bar dataKey="percentageChange" fill="#82ca9d" /> */}
-                {this.state.sortOrder == null ? (
-                  <Bar dataKey="Budget 2020" fill="#03ab97" />
-                ) : (
-                  <Bar dataKey="Increase/Decrease by " fill="#8884d8" />
-                )}
-              </BarChart>
-            </Col>
-            <Button onClick={this.showPrev}>Prev</Button>
-            <Button onClick={this.showNext}>Next</Button>
-            <Button onClick={this.sortByPercentageIncrease}>
-              Sort by percentage icrease
-            </Button>
-            <Button onClick={this.sortByPercentageAllocated}>
-              Sort by percentage allocated
-            </Button>
-          </Row>
+          <div>
+            <h1
+              style={{
+                fontFamily: "Open Sans",
+                fontWeight: "font-weight",
+                color: "#515B5E",
+              }}
+            >
+              Expenditure Budget of Ministries and Departments
+              &nbsp;&nbsp; {
+                this.state.sortOrder == null ? <Tag color="success">Sorted by Percentage Allocated</Tag> : <Tag color="processing">Sorted by Percentage Increase/Decrease</Tag>
+              }
+            </h1>
+          <div style={{float: "right" , display: "block" , paddingBottom: "20px"}}>
+          <Button onClick={this.sortByPercentageIncrease} style={{display: "inline"}}  type={this.state.sortOrder != null ? "primary" : ""} >
+                Sort by percentage icrease
+              </Button>
+              &nbsp;
+              <Button onClick={this.sortByPercentageAllocated} style={{display: "inline"}} type={this.state.sortOrder == null ? "primary" : ""}>
+                Sort by percentage allocated
+              </Button>
+            </div>
+            <Row style={{ marginTop: "30px" }}>
+              <Col span={12}>
+              <br/>
+
+                <BarChart
+                  width={1150}
+                  height={300}
+                  data={this.state.barChartData}
+                  margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="9 9" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend />
+                  <ReferenceLine y={0} stroke="#000" />
+                  {/* <Bar dataKey="percentageChange" fill="#82ca9d" /> */}
+                  {this.state.sortOrder == null ? (
+                    <Bar dataKey="Budget 2020" fill="#03ab97" />
+                  ) : (
+                    <Bar dataKey="Increase/Decrease by " fill="#8884d8" />
+                  )}
+                </BarChart>
+              </Col>
+         
+             
+            </Row>
+            <Row style={{marginTop: "20px" , marginBottom: "20px"}}>
+              <Col span={8}>
+
+              </Col>
+              <Col span={2}>
+              <Button onClick={this.showPrev} >Previous</Button>
+
+              </Col>
+              <Col span={4}>
+                  <p>Displaying {this.state.start} to {this.state.end} of {this.state.departmentSummaryData.length -1}</p>
+              </Col>
+              <Col span={2}>
+              <Button onClick={this.showNext} >Next</Button>
+
+              </Col>
+              <Col span={8}>
+
+              </Col>
+            </Row>
+          </div>
         ) : (
           "Loading...."
         )}
