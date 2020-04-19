@@ -289,6 +289,52 @@ class AllDepartmentsVisual extends React.Component {
       );
     }
   };
+  sortByPercentageIncrease = () => {
+
+    let data = this.state.departmentSummaryData;
+    data = data.sort((a, b) => {
+      return b["Percentage Change"] - a["Percentage Change"] 
+    })
+
+
+
+
+    this.setState(
+      {
+        departmentSummaryData : data,
+        start: 1,
+        end: 20,
+      },
+      () => {
+        this.renderDataForBarChart();
+      }
+    );
+
+  }
+
+  sortByPercentageAllocated = () => {
+
+    let data = this.state.departmentSummaryData;
+    data = data.sort((a, b) => {
+      return  b["Percentage of Budget"]  - a["Percentage of Budget"]
+    })
+    this.setState({
+      departmentSummaryData : data
+    })
+
+    this.setState(
+      {
+        departmentSummaryData : data,
+        start:1,
+        end: 20,
+      },
+      () => {
+        this.renderDataForBarChart();
+      }
+    );
+
+  }
+
   render() {
     return (
       <div>
@@ -318,6 +364,10 @@ class AllDepartmentsVisual extends React.Component {
             </Col>
             <Button onClick={this.showPrev}>Prev</Button>
             <Button onClick={this.showNext}>Next</Button>
+            <Button onClick={this.sortByPercentageIncrease}>Sort by percentage icrease</Button>
+            <Button onClick={this.sortByPercentageAllocated}>Sort by percentage allocated</Button>
+
+
           </Row>
         ) : (
           "Loading...."
