@@ -6,7 +6,9 @@ import os
 
 api = Flask(__name__)
 CORS(api)
-
+@api.route('/', methods=['GET'])
+def get_welcome_page():
+  return "Welcome Success"
 @api.route('/departments', methods=['GET'])
 def get_detartments():
   filename = os.path.join(app.static_folder, 'data', 'data.json')

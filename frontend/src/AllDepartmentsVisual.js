@@ -30,6 +30,7 @@ class AllDepartmentsVisual extends React.Component {
     super(props);
     this.state = {
       departmentSummaryData: null,
+      sortedDepartmentSummaryData : null,
       pieChartData: null,
       totalBudget: null,
       lineChartData: null
@@ -136,11 +137,6 @@ class AllDepartmentsVisual extends React.Component {
       lineChartData
     })
 
-  //  [
-  //     {
-  //       name: 'Page A', uv: 4000, pv: 2400, amt: 2400,
-  //     },
-  //   ]
 
   };
   fetchTotalBudgetData = async () => {
@@ -153,6 +149,23 @@ class AllDepartmentsVisual extends React.Component {
     });
     this.renderDataForLineChart(totalBudget);
   };
+  getCurrentYearSummary = () => {
+    let curretYear = this.state.totalBudget["Budget Estimates 2020-2021 Total"];
+    let previousYear = this.state.totalBudget["Budget Estimates 2019-2020 Total"];
+    if(curretYear == "..." || previousYear == "..."){
+        return `increades/decreased by [DATA ABSENT]`
+    }
+    let difference =   curretYear - previousYear
+    let differencePercentage = (Math.abs(difference) / previousYear)*100;
+
+    if(difference>0) {
+        return `has increased by  ${differencePercentage.toFixed(3)}% which amounts to ${difference.toFixed(3)} crores`
+    } else if (difference < 0) {
+      return `has decreased by ${differencePercentage.toFixed(3)}% which amounts to ${Math.abs(difference.toFixed(3))} crores`
+    } else {
+        return `has remained the same`
+    }
+}
   render() {
     return (
       <div>
@@ -176,21 +189,17 @@ class AllDepartmentsVisual extends React.Component {
         <Legend />
         <Area type="monotone" dataKey="budget" stroke="#8884d8" activeDot={{ r: 8 }} />
       </AreaChart>
-      {/* <AreaChart
-        width={500}
-        height={400}
-        data={this.state.lineChartData}
-        margin={{
-          top: 10, right: 30, left: 0, bottom: 0,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="year" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Area type="monotone" dataKey="budget" stroke="#8884d8" activeDot={{ r: 8 }} />
-      </AreaChart> */}
+
+      {
+             this.state.totalBudget != null ? <div>
+                  <h3><u>Brief Insights:</u></h3>
+      <h4>> This year the budget is INR  {this.state.totalBudget["Budget Estimates 2020-2021 Total"].toFixed(3)} crores</h4>
+
+            <h4>> The budget of 2020-21 {this.getCurrentYearSummary()} as compared to the past year</h4>
+            {/* <h4>> The budget for {this.props.departmentSummaryData["Ministries/Departments"]} accounts for {((this.props.departmentSummaryData["Budget Estimates 2020-2021 Total"]/3042230)*100).toFixed(3)} % of the the toal budget </h4> */}
+
+             </div> : ""
+         }
           </Col>
           <Col span={12}>
             <h1>How government spends every 100 INR from the budget?</h1>
