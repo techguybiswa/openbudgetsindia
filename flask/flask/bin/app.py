@@ -35,11 +35,21 @@ def get_detartments_summary():
   with open(filename) as data_json:
     data = json.load(data_json)
   for i in data:
-    i["Percentage of Budget"] = round((i["Budget Estimates 2020-2021 Total"]/3042230)*100,2)
+    if(i["Budget Estimates 2019-2020 Total"] == "..."):
+      i["Budget Estimates 2019-2020 Total"] = 0
+      i["Percentage of Budget"] = round((i["Budget Estimates 2020-2021 Total"]/3042230)*100,4)
+      i["Percentage Change"] = -99
+    else:
+      currYear = int(i["Budget Estimates 2020-2021 Total"])
+      prevYear = int(i["Budget Estimates 2019-2020 Total"])
+      i["Percentage of Budget"] = round((currYear/3042230)*100,4)
+      i["Percentage Change"] = round(((currYear - prevYear)/prevYear)*100,3)
+
   data = sorted(data, key=lambda data:data["Percentage of Budget"], reverse=True) 
 
   # return json.dumps(companies)
   return json.dumps(data)
+
 
 @api.route('/total-budget', methods=['GET'])
 def get_total_budget():

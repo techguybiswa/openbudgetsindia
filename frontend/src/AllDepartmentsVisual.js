@@ -13,34 +13,55 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  AreaChart, Area,
+  AreaChart,
+  Area,
+  ReferenceLine,
 } from "recharts";
 import { PieChart, Pie, Sector } from "recharts";
-import {
-  LineChart, Line,
-} from 'recharts';
+import { LineChart, Line } from "recharts";
 const { Option } = Select;
 
 const { Title } = Typography;
 
 const { Column, ColumnGroup } = Table;
 
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active) {
+    console.log(payload);
+    return (
+      <div className="custom-tooltip">
+        <p className="label">{`${label} : ${payload[0].value}`}</p>
+        <p className="label">
+          Percentage Change: {`${payload[0].payload["Increase/Decrease by "]}`}
+        </p>
+        <p className="label">
+          Percentage Allocated: {`${payload[0].payload["Percentage Allocated"]}`}
+        </p>
+        {/* <p className="desc">Anything you want can be displayed here.</p> */}
+      </div>
+    );
+  }
+
+  return null;
+};
 class AllDepartmentsVisual extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       departmentSummaryData: null,
-      sortedDepartmentSummaryData : null,
+      sortedDepartmentSummaryData: null,
       pieChartData: null,
       totalBudget: null,
-      lineChartData: null
+      lineChartData: null,
+      barChartData: null,
+      start: 1,
+      end: 20,
     };
   }
 
-
   componentDidMount = () => {
     this.showSummaryOfDepartment();
-    this.fetchTotalBudgetData()
+    this.fetchTotalBudgetData();
   };
   getRemainingBudget = () => {
     let count = 0;
@@ -120,24 +141,58 @@ class AllDepartmentsVisual extends React.Component {
       departmentSummaryData,
     });
     this.renderDataForPieChart(departmentSummaryData);
+    this.renderDataForBarChart();
   };
-  renderDataForLineChart = () => {
-    let { totalBudget } = this.state;
-    console.log("totalBudget" , totalBudget);
-    let lineChartData = [
-      {year: "2016/2017", budget: totalBudget["Actuals 2016-2017 Total"]},
-      {year: "2017/2018", budget: totalBudget["Budget Estimates 2017-2018 Total"]},
-      {year: "2018/2019", budget: totalBudget["Budget Estimates 2018-2019 Total"]},
-      {year: "2019/2020", budget: totalBudget["Budget Estimates 2019-2020 Total"]},
-      {year: "2020/2021", budget: totalBudget["Budget Estimates 2020-2021 Total"]},
+  renderDataForBarChart = () => {
+    let { start, end } = this.state;
+    let { departmentSummaryData } = this.state;
+    let barChartData = [];
+    for (var i = start; i <= end; i++) {
+      let data = {
+        name: departmentSummaryData[i]["Ministries/Departments"],
+        "Budget 2020":
+          departmentSummaryData[i]["Budget Estimates 2020-2021 Total"],
+        "Increase/Decrease by ": departmentSummaryData[i]["Percentage Change"],
+        "Percentage Allocated": departmentSummaryData[i]["Percentage of Budget"],
 
-    ]
+      };
+      barChartData.push(data);
+    }
+    this.setState({
+      barChartData,
+    });
+    console.log("barChartData", this.state.barChartData);
+  };
+
+  renderDataForLineChart = (totalBudget) => {
+    // let { totalBudget } = this.state;
+    console.log("totalBudget", totalBudget);
+    let lineChartData = [
+      {
+        year: "2016/2017",
+        budget: totalBudget["Actuals 2016-2017 Total"],
+      },
+      {
+        year: "2017/2018",
+        budget: totalBudget["Budget Estimates 2017-2018 Total"],
+      },
+      {
+        year: "2018/2019",
+        budget: totalBudget["Budget Estimates 2018-2019 Total"],
+      },
+      {
+        year: "2019/2020",
+        budget: totalBudget["Budget Estimates 2019-2020 Total"],
+      },
+      {
+        year: "2020/2021",
+        budget: totalBudget["Budget Estimates 2020-2021 Total"],
+      },
+    ];
 
     this.setState({
-      lineChartData
-    })
-
-
+      lineChartData,
+    });
   };
   fetchTotalBudgetData = async () => {
     let totalBudget = await fetch(
@@ -151,55 +206,172 @@ class AllDepartmentsVisual extends React.Component {
   };
   getCurrentYearSummary = () => {
     let curretYear = this.state.totalBudget["Budget Estimates 2020-2021 Total"];
-    let previousYear = this.state.totalBudget["Budget Estimates 2019-2020 Total"];
-    if(curretYear == "..." || previousYear == "..."){
-        return `increades/decreased by [DATA ABSENT]`
+    let previousYear = this.state.totalBudget[
+      "Budget Estimates 2019-2020 Total"
+    ];
+    if (curretYear == "..." || previousYear == "...") {
+      return `increades/decreased by [DATA ABSENT]`;
     }
-    let difference =   curretYear - previousYear
-    let differencePercentage = (Math.abs(difference) / previousYear)*100;
+    let difference = curretYear - previousYear;
+    let differencePercentage = (Math.abs(difference) / previousYear) * 100;
 
-    if(difference>0) {
-        return `has increased by  ${differencePercentage.toFixed(3)}% which amounts to ${difference.toFixed(3)} crores`
+    if (difference > 0) {
+      return `has increased by  ${differencePercentage.toFixed(
+        3
+      )}% which amounts to ${difference.toFixed(3)} crores`;
     } else if (difference < 0) {
-      return `has decreased by ${differencePercentage.toFixed(3)}% which amounts to ${Math.abs(difference.toFixed(3))} crores`
+      return `has decreased by ${differencePercentage.toFixed(
+        3
+      )}% which amounts to ${Math.abs(difference.toFixed(3))} crores`;
     } else {
-        return `has remained the same`
+      return `has remained the same`;
     }
-}
+  };
+  showNext = () => {
+    let { start, end, departmentSummaryData } = this.state;
+
+    let maxLength = departmentSummaryData.length - 1;
+    let minLength = 1;
+    if (end == maxLength) {
+      alert("End of graph reached");
+      return 0;
+    }
+    if (end + 20 > maxLength) {
+      this.setState(
+        {
+          start: start + (maxLength - end),
+          end: end + (maxLength - end),
+        },
+        () => {
+          this.renderDataForBarChart();
+        }
+      );
+    } else {
+      this.setState(
+        {
+          start: start + 20,
+          end: end + 20,
+        },
+        () => {
+          this.renderDataForBarChart();
+        }
+      );
+    }
+  };
+  showPrev = () => {
+    let { start, end, departmentSummaryData } = this.state;
+
+    let maxLength = departmentSummaryData.length - 1;
+    let minLength = 1;
+    if (start == minLength) {
+      alert("End of graph reached");
+      return 0;
+    }
+    if (start - 10 < minLength) {
+      this.setState(
+        {
+          start: start - (start - minLength),
+          end: end - (end - minLength),
+        },
+        () => {
+          this.renderDataForBarChart();
+        }
+      );
+    } else {
+      this.setState(
+        {
+          start: start - 20,
+          end: end - 20,
+        },
+        () => {
+          this.renderDataForBarChart();
+        }
+      );
+    }
+  };
   render() {
     return (
       <div>
+        {this.state.barChartData != null ? (
+          <Row>
+            <Col span={12}>
+              <BarChart
+                width={1200}
+                height={300}
+                data={this.state.barChartData}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+                <ReferenceLine y={0} stroke="#000" />
+                {/* <Bar dataKey="percentageChange" fill="#82ca9d" /> */}
+                <Bar dataKey="Budget 2020" fill="#8884d8" />
+              </BarChart>
+            </Col>
+            <Button onClick={this.showPrev}>Prev</Button>
+            <Button onClick={this.showNext}>Next</Button>
+          </Row>
+        ) : (
+          "Loading...."
+        )}
         <Row>
           <Col span={12}>
-          <h1>Government budget over the past years</h1>
-          <AreaChart
-        width={500}
-        height={200}
-        isAnimationActive={true}
+            <h1>Government budget over the past years</h1>
+            <AreaChart
+              width={500}
+              height={200}
+              isAnimationActive={true}
+              data={this.state.lineChartData}
+              margin={{
+                top: 10,
+                right: 30,
+                left: 0,
+                bottom: 0,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="year" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Area
+                type="monotone"
+                dataKey="budget"
+                stroke="#8884d8"
+                activeDot={{ r: 8 }}
+              />
+            </AreaChart>
 
-        data={this.state.lineChartData}
-        margin={{
-          top: 10, right: 30, left: 0, bottom: 0,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="year" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Area type="monotone" dataKey="budget" stroke="#8884d8" activeDot={{ r: 8 }} />
-      </AreaChart>
+            {this.state.totalBudget != null ? (
+              <div>
+                <h3>
+                  <u>Brief Insights:</u>
+                </h3>
+                <h4>
+                  > This year the budget is INR{" "}
+                  {this.state.totalBudget[
+                    "Budget Estimates 2020-2021 Total"
+                  ].toFixed(3)}{" "}
+                  crores
+                </h4>
 
-      {
-             this.state.totalBudget != null ? <div>
-                  <h3><u>Brief Insights:</u></h3>
-      <h4>> This year the budget is INR  {this.state.totalBudget["Budget Estimates 2020-2021 Total"].toFixed(3)} crores</h4>
-
-            <h4>> The budget of 2020-21 {this.getCurrentYearSummary()} as compared to the past year</h4>
-            {/* <h4>> The budget for {this.props.departmentSummaryData["Ministries/Departments"]} accounts for {((this.props.departmentSummaryData["Budget Estimates 2020-2021 Total"]/3042230)*100).toFixed(3)} % of the the toal budget </h4> */}
-
-             </div> : ""
-         }
+                <h4>
+                  > The budget of 2020-21 {this.getCurrentYearSummary()} as
+                  compared to the past year
+                </h4>
+                {/* <h4>> The budget for {this.props.departmentSummaryData["Ministries/Departments"]} accounts for {((this.props.departmentSummaryData["Budget Estimates 2020-2021 Total"]/3042230)*100).toFixed(3)} % of the the toal budget </h4> */}
+              </div>
+            ) : (
+              ""
+            )}
           </Col>
           <Col span={12}>
             <h1>How government spends every 100 INR from the budget?</h1>
