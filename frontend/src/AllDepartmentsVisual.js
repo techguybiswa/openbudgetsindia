@@ -35,7 +35,8 @@ const CustomTooltip = ({ active, payload, label }) => {
           Percentage Change: {`${payload[0].payload["Increase/Decrease by "]}`}
         </p>
         <p className="label">
-          Percentage Allocated: {`${payload[0].payload["Percentage Allocated"]}`}
+          Percentage Allocated:{" "}
+          {`${payload[0].payload["Percentage Allocated"]}`}
         </p>
         {/* <p className="desc">Anything you want can be displayed here.</p> */}
       </div>
@@ -56,6 +57,7 @@ class AllDepartmentsVisual extends React.Component {
       barChartData: null,
       start: 1,
       end: 20,
+      sortOrder: null,
     };
   }
 
@@ -153,8 +155,8 @@ class AllDepartmentsVisual extends React.Component {
         "Budget 2020":
           departmentSummaryData[i]["Budget Estimates 2020-2021 Total"],
         "Increase/Decrease by ": departmentSummaryData[i]["Percentage Change"],
-        "Percentage Allocated": departmentSummaryData[i]["Percentage of Budget"],
-
+        "Percentage Allocated":
+          departmentSummaryData[i]["Percentage of Budget"],
       };
       barChartData.push(data);
     }
@@ -263,7 +265,7 @@ class AllDepartmentsVisual extends React.Component {
 
     let maxLength = departmentSummaryData.length - 1;
     let minLength = 1;
-    if (start == minLength) {
+    if (start <= minLength) {
       alert("End of graph reached");
       return 0;
     }
@@ -290,91 +292,49 @@ class AllDepartmentsVisual extends React.Component {
     }
   };
   sortByPercentageIncrease = () => {
-
     let data = this.state.departmentSummaryData;
     data = data.sort((a, b) => {
-      return b["Percentage Change"] - a["Percentage Change"] 
-    })
-
-
-
-
+      return b["Percentage Change"] - a["Percentage Change"];
+    });
     this.setState(
       {
-        departmentSummaryData : data,
-        start: 1,
+        departmentSummaryData: data,
+        start: 0,
         end: 20,
+        sortOrder: "percentageInc",
       },
       () => {
         this.renderDataForBarChart();
       }
     );
-
-  }
+  };
 
   sortByPercentageAllocated = () => {
-
     let data = this.state.departmentSummaryData;
     data = data.sort((a, b) => {
-      return  b["Percentage of Budget"]  - a["Percentage of Budget"]
-    })
-    this.setState({
-      departmentSummaryData : data
-    })
+      return b["Percentage of Budget"] - a["Percentage of Budget"];
+    });
 
     this.setState(
       {
-        departmentSummaryData : data,
-        start:1,
+        departmentSummaryData: data,
+        start: 1,
         end: 20,
+        sortOrder: null,
       },
       () => {
         this.renderDataForBarChart();
       }
     );
-
-  }
+  };
 
   render() {
     return (
       <div>
-        {this.state.barChartData != null ? (
-          <Row>
-            <Col span={12}>
-              <BarChart
-                width={1200}
-                height={300}
-                data={this.state.barChartData}
-                margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend />
-                <ReferenceLine y={0} stroke="#000" />
-                {/* <Bar dataKey="percentageChange" fill="#82ca9d" /> */}
-                <Bar dataKey="Budget 2020" fill="#8884d8" />
-              </BarChart>
-            </Col>
-            <Button onClick={this.showPrev}>Prev</Button>
-            <Button onClick={this.showNext}>Next</Button>
-            <Button onClick={this.sortByPercentageIncrease}>Sort by percentage icrease</Button>
-            <Button onClick={this.sortByPercentageAllocated}>Sort by percentage allocated</Button>
-
-
-          </Row>
-        ) : (
-          "Loading...."
-        )}
         <Row>
           <Col span={12}>
-            <h1>Government budget over the past years</h1>
+            <h1 style={{fontFamily : "Open Sans" , fontWeight: "font-weight", color: "#515B5E"}}>Government budget over the past years (2016-2021)</h1>
+            <br/>
             <AreaChart
               width={500}
               height={200}
@@ -402,10 +362,10 @@ class AllDepartmentsVisual extends React.Component {
 
             {this.state.totalBudget != null ? (
               <div>
-                <h3>
+                <h3 style={{fontFamily : "Open Sans" , fontWeight: "font-weight", color: "#515B5E"}}>
                   <u>Brief Insights:</u>
                 </h3>
-                <h4>
+                <h4 style={{fontFamily : "Open Sans" , fontWeight: "font-weight", color: "#515B5E"}}>
                   > This year the budget is INR{" "}
                   {this.state.totalBudget[
                     "Budget Estimates 2020-2021 Total"
@@ -413,7 +373,7 @@ class AllDepartmentsVisual extends React.Component {
                   crores
                 </h4>
 
-                <h4>
+                <h4 style={{fontFamily : "Open Sans" , fontWeight: "font-weight", color: "#515B5E"}}>
                   > The budget of 2020-21 {this.getCurrentYearSummary()} as
                   compared to the past year
                 </h4>
@@ -424,9 +384,8 @@ class AllDepartmentsVisual extends React.Component {
             )}
           </Col>
           <Col span={12}>
-            <h1>How government spends every 100 INR from the budget?</h1>
-
-            <PieChart width={400} height={400}>
+            <h1 style={{fontFamily : "Open Sans" , fontWeight: "font-weight", color: "#515B5E"}}>How government spends every 100 INR from the budget?</h1>
+            <PieChart width={400} height={400} style={{marginTop: "-70px"}}>
               <Pie
                 dataKey="value"
                 isAnimationActive={true}
@@ -441,6 +400,46 @@ class AllDepartmentsVisual extends React.Component {
             </PieChart>
           </Col>
         </Row>
+        {this.state.barChartData != null ? (
+          <Row>
+            <Col span={12}>
+              <BarChart
+                width={1150}
+                height={300}
+                data={this.state.barChartData}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="9 9" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+                <ReferenceLine y={0} stroke="#000" />
+                {/* <Bar dataKey="percentageChange" fill="#82ca9d" /> */}
+                {this.state.sortOrder == null ? (
+                  <Bar dataKey="Budget 2020" fill="#03ab97" />
+                ) : (
+                  <Bar dataKey="Increase/Decrease by " fill="#8884d8" />
+                )}
+              </BarChart>
+            </Col>
+            <Button onClick={this.showPrev}>Prev</Button>
+            <Button onClick={this.showNext}>Next</Button>
+            <Button onClick={this.sortByPercentageIncrease}>
+              Sort by percentage icrease
+            </Button>
+            <Button onClick={this.sortByPercentageAllocated}>
+              Sort by percentage allocated
+            </Button>
+          </Row>
+        ) : (
+          "Loading...."
+        )}
       </div>
     );
   }
