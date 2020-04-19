@@ -446,11 +446,16 @@ class AllDepartmentsVisual extends React.Component {
                 color: "#515B5E",
               }}
             >
-              Expenditure Budget of Ministries and Departments
+              Expenditure Budget of Ministries/Departments
               &nbsp;&nbsp; {
                 this.state.sortOrder == null ? <Tag color="success">Sorted by Percentage Allocated</Tag> : <Tag color="processing">Sorted by Percentage Increase/Decrease</Tag>
               }
             </h1>
+            <p  style={{
+                fontFamily: "Open Sans",
+                fontWeight: "font-weight",
+                color: "#515B5E",
+              }}>Hover over the bar graph to know details of the department/ministry</p>
           <div style={{float: "right" , display: "block" , paddingBottom: "20px"}}>
           <Button onClick={this.sortByPercentageIncrease} style={{display: "inline"}}  type={this.state.sortOrder != null ? "primary" : ""} >
                 Sort by percentage increase

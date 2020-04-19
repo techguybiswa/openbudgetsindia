@@ -211,7 +211,9 @@ class DataTable extends React.Component {
             >
               Detailed department-wise division of budgets of Ministries/Departments (2018-2021)
             </h1>
-          <Select
+            <Row style={{marginBottom: "20px"}}>
+              <Col span={10}>
+              <Select
             mode="multiple"
             style={{ width: "500px" }}
             placeholder="Select Ministry/Department..."
@@ -219,8 +221,20 @@ class DataTable extends React.Component {
             onChange={this.handleChangeOfFilter}
             options={this.state.filterObject}
           />
-          <Button onClick={this.filterTable}>{this.state.filterStatus}</Button>
-          <Button onClick={this.clearFilter}>Clear Filter</Button>
+              </Col>
+              <Col span={1}>
+
+              </Col>
+              <Col span={2}>
+              <Button onClick={this.filterTable} type="info">{this.state.filterStatus}</Button>
+              </Col>
+              <Col span={2}>
+              <Button onClick={this.clearFilter} type="danger">Clear Filter</Button>
+
+              </Col>
+            </Row>
+       
+
           <Row>
             <Col span={24}>
               <Table

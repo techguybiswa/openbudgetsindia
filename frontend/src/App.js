@@ -30,7 +30,7 @@ class App extends React.Component {
         <AllDepartmentsVisual/>
         <Divider />
 
-        <DataTable/>
+        <DataTable />
       </div>
       </Content>
       <Footer style={{ textAlign: 'center' }}>Created by @techguybiswa</Footer>
