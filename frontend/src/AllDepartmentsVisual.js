@@ -375,6 +375,7 @@ class AllDepartmentsVisual extends React.Component {
                     fontFamily: "Open Sans",
                     fontWeight: "font-weight",
                     color: "#515B5E",
+                    marginTop: "10px"
                   }}
                 >
                   <u>Brief Insights:</u>
@@ -452,7 +453,7 @@ class AllDepartmentsVisual extends React.Component {
             </h1>
           <div style={{float: "right" , display: "block" , paddingBottom: "20px"}}>
           <Button onClick={this.sortByPercentageIncrease} style={{display: "inline"}}  type={this.state.sortOrder != null ? "primary" : ""} >
-                Sort by percentage icrease
+                Sort by percentage increase
               </Button>
               &nbsp;
               <Button onClick={this.sortByPercentageAllocated} style={{display: "inline"}} type={this.state.sortOrder == null ? "primary" : ""}>

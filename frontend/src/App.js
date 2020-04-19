@@ -1,6 +1,6 @@
 import React from "react";
 import DataTable from './DataTable'
-import { Layout, Menu, Breadcrumb } from 'antd';
+import { Layout, Menu, Divider } from 'antd';
 
 import AllDepartmentsVisual from  './AllDepartmentsVisual'
 const { Header, Content, Footer } = Layout;
@@ -28,6 +28,8 @@ class App extends React.Component {
 
       <div style={{backgroundColor: 'white' , padding: '20px'}} >
         <AllDepartmentsVisual/>
+        <Divider />
+
         <DataTable/>
       </div>
       </Content>

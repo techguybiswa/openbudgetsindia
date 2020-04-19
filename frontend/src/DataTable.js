@@ -201,6 +201,16 @@ class DataTable extends React.Component {
     return (
       <div>
         <div>
+        <h1
+              style={{
+                fontFamily: "Open Sans",
+                fontWeight: "font-weight",
+                color: "#515B5E",
+                marginTop: "30px"
+              }}
+            >
+              Detailed department-wise division of budgets of Ministries/Departments (2018-2021)
+            </h1>
           <Select
             mode="multiple"
             style={{ width: "500px" }}
