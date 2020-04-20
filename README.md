@@ -36,6 +36,11 @@ With this project we plan to <b><i>"visualize"</i></b> the available data and dr
   <li><b>Hosting : </b> <a href="https://surge.sh/"> Surge for frontend hosting </a>, <a href="https://www.pythonanywhere.com/"> PythonAnywhere for backend  hosting </a></li>
  
 </ol>
+<h3>Future Work: </h3>
+<ol>
+  <li>Make the website mobile responsive</li>
+ <li>Build custom charting library to render the data in a more customized way</li>
+</ol>
 
 <h3>Contributing: </h3>
 If you want to contribute to this project please write to: <b>bis.banerjee.bb@gmail.com</b> or simple create a <b>new issue</b>
