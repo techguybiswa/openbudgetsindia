@@ -16,6 +16,7 @@ With this project we plan to <b><i>"visualize"</i></b> the available data and dr
  <b>This dashboard showcases meaningful information and insights of the Expenditure Budget of 2020-21
 </b>
 </p>
+<img src="https://i.ibb.co/cwDb3fS/Screenshot-2020-04-20-at-9-44-43-AM.png" style="border: 1px solid black"/>
 <h3>Features of the Budget Explorer 2020 v1.0 Dashboard: </h3>
 <ul>
  <li><b>Grand Total of Expenditure Budget over the past years: </b> This module shows how the Expenditure budget has changed over the pst 
