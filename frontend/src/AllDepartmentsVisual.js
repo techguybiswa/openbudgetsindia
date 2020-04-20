@@ -136,7 +136,7 @@ class AllDepartmentsVisual extends React.Component {
   };
   showSummaryOfDepartment = async () => {
     let departmentSummaryData = await fetch(
-      `http://localhost:5000/departments-summary`
+      `http://bisso1998.pythonanywhere.com//departments-summary`
     ).then((response) => response.json());
     console.log("departmentSummaryData", departmentSummaryData);
     this.setState({
@@ -198,7 +198,7 @@ class AllDepartmentsVisual extends React.Component {
   };
   fetchTotalBudgetData = async () => {
     let totalBudget = await fetch(
-      `http://localhost:5000/total-budget`
+      `http://bisso1998.pythonanywhere.com//total-budget`
     ).then((response) => response.json());
     console.log("totalBudget", totalBudget);
     this.setState({

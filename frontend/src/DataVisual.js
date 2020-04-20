@@ -47,7 +47,7 @@ class DataVisual extends React.Component {
 
   showSummaryOfDepartment = async () => {
     let departmentSummaryData = await fetch(
-      `http://localhost:5000/department/` +
+      `http://bisso1998.pythonanywhere.com//department/` +
         this.props.record["Ministries/Departments"]
     ).then((response) => response.json());
     console.log("departmentSummaryData", departmentSummaryData);
