@@ -37,4 +37,7 @@ With this project we plan to <b><i>"visualize"</i></b> the available data and dr
  
 </ol>
 
+<h3>Contributing: </h3>
+If you want to contribute to this project please write to: <b>bis.banerjee.bb@gmail.com</b> or simple create a <b>new issue</b>
+
 
