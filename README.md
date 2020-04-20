@@ -1,4 +1,5 @@
 <h1> Welcome to Budget Explorer 2020 v1.0</h1>
+<a href="http://budget2020.surge.sh/">Expenditure Budget Explorer 2020 v1.0 Dashboard </a>
 <h3>A brief about Union Budget 2020</h3>
 <p>Every year all the departments of our governemnt creates a budget for the nation. Now there are two parts to it: 
 <ul>
@@ -15,7 +16,7 @@ With this project we plan to <b><i>"visualize"</i></b> the available data and dr
  <b>This dashboard showcases meaningful information and insights of the Expenditure Budget of 2020-21
 </b>
 </p>
-<h3>Features of the Budget Explorer 2020 v1.0 dashboard: </h3>
+<h3>Features of the Budget Explorer 2020 v1.0 Dashboard: </h3>
 <ul>
  <li><b>Grand Total of Expenditure Budget over the past years: </b> This module shows how the Expenditure budget has changed over the pst 
   years. We can keep a track of increase or decrease of Expenditure budget by seeeing the graph. This module also calculates the increase percentage over the years in Expenditure Budget</li>
@@ -27,5 +28,13 @@ With this project we plan to <b><i>"visualize"</i></b> the available data and dr
    <li><b>Filter By Ministry/Department : </b> A easy to use filter with auto-suggestions have been integrated to search for any particular or multiple ministries and departments.</li>
     <li><b>Sortable Table : </b> The table that displays all the information about the expenditure of the ministries can be easily sorted with any column parameter</li>
 </ul>
+
+<h3>Tech Stack: </h3>
+<ol>
+ <li><b>Front End : </b>ES6,  <a href="https://github.com/facebook/react"> ReactJs </a>,<a href="https://github.com/ant-design/ant-design/"> Ant Design</a> , <a href="https://github.com/recharts/recharts">Recharts</a> </li>
+  <li><b>Back End : </b>Python3,  <a href="https://github.com/pallets/flask"> Flask </a>, </li>
+  <li><b>Hosting : </b> <a href="https://surge.sh/"> Surge for frontend hosting </a>, <a href="https://www.pythonanywhere.com/"> PythonAnywhere for backend  hosting </a></li>
+ 
+</ol>
 
 
