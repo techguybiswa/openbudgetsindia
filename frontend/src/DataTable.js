@@ -52,7 +52,7 @@ class DataTable extends React.Component {
 
   fetchAllDepartmentDetails = async () => {
     const departmentData = await fetch(
-      `http://bisso1998.pythonanywhere.com//departments`
+      `https://bisso1998.pythonanywhere.com///departments`
     ).then((response) => response.json());
     return departmentData;
   };
