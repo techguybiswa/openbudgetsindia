@@ -27,10 +27,10 @@ const { Column, ColumnGroup } = Table;
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active) {
-    console.log(payload);
     return (
       <div className="custom-tooltip">
         <p className="label">{`${label} : ${payload[0].value}`}</p>
+
         <p className="label">
           Percentage Change: {`${payload[0].payload["Increase/Decrease by "]}`}
         </p>
@@ -45,11 +45,33 @@ const CustomTooltip = ({ active, payload, label }) => {
 
   return null;
 };
+const CustomTooltipSorted = ({ active, payload, label }) => {
+  if (active) {
+    console.log(payload)
+    return (
+      <div className="custom-tooltip">
+        <p className="label">{`${label} : ${payload[0].payload["Budget 2020"]}`}</p>
+
+         <p className="label">
+          Percentage Change: {`${payload[0].payload["Increase/Decrease by "]}`}
+        </p>
+        <p className="label">
+          Percentage Allocated:{" "}
+          {`${payload[0].payload["Percentage Allocated"]}`}
+        </p> 
+         <p className="desc">Anything you want can be displayed here.</p>
+      </div>
+    );
+  }
+
+  return null;
+};
 class AllDepartmentsVisual extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       departmentSummaryData: null,
+      departmentSummaryDataCopy: null,
       sortedDepartmentSummaryData: null,
       pieChartData: null,
       totalBudget: null,
@@ -58,6 +80,9 @@ class AllDepartmentsVisual extends React.Component {
       start: 1,
       end: 20,
       sortOrder: null,
+      filterObject: null,
+      filterValues: [],
+      filterStatus: "Filter",
     };
   }
 
@@ -141,15 +166,39 @@ class AllDepartmentsVisual extends React.Component {
     console.log("departmentSummaryData", departmentSummaryData);
     this.setState({
       departmentSummaryData,
+      departmentSummaryDataCopy: departmentSummaryData,
     });
     this.renderDataForPieChart(departmentSummaryData);
     this.renderDataForBarChart();
+    this.generateFilterObject(departmentSummaryData);
+  };
+  generateFilterObject = (data) => {
+    let mapOfDepartments = {};
+    for (var i = 0; i < data.length; i++) {
+      let tmp = data[i];
+      let nameOfDepartment = tmp["Ministries/Departments"];
+      mapOfDepartments[nameOfDepartment] = true;
+    }
+    console.log("mapOfDepartments", mapOfDepartments);
+    let filterObject = [];
+    Object.keys(mapOfDepartments).map((eachObject) => {
+      let obj = {
+        text: eachObject,
+        value: eachObject,
+      };
+      filterObject.push(obj);
+    });
+    this.setState({
+      filterObject,
+    });
+    return filterObject;
   };
   renderDataForBarChart = () => {
     let { start, end } = this.state;
     let { departmentSummaryData } = this.state;
     let barChartData = [];
     for (var i = start; i <= end; i++) {
+      console.log(departmentSummaryData[i]["Ministries/Departments"]);
       let data = {
         name: departmentSummaryData[i]["Ministries/Departments"],
         "Budget 2020":
@@ -292,12 +341,14 @@ class AllDepartmentsVisual extends React.Component {
     }
   };
   sortByPercentageIncrease = () => {
-    let data = this.state.departmentSummaryData;
+    let data = this.state.departmentSummaryDataCopy;
     data = data.sort((a, b) => {
       return b["Percentage Change"] - a["Percentage Change"];
     });
     this.setState(
       {
+        filterValues: [],
+
         departmentSummaryData: data,
         start: 0,
         end: 20,
@@ -310,13 +361,15 @@ class AllDepartmentsVisual extends React.Component {
   };
 
   sortByPercentageAllocated = () => {
-    let data = this.state.departmentSummaryData;
+    let data = this.state.departmentSummaryDataCopy;
     data = data.sort((a, b) => {
       return b["Percentage of Budget"] - a["Percentage of Budget"];
     });
 
     this.setState(
       {
+        filterValues: [],
+
         departmentSummaryData: data,
         start: 1,
         end: 20,
@@ -327,7 +380,41 @@ class AllDepartmentsVisual extends React.Component {
       }
     );
   };
-
+  handleChangeOfFilter = (value) => {
+    this.setState({
+      filterValues: value,
+    });
+  };
+  clearFilter = () => {
+    this.setState(
+      {
+        filterValues: [],
+        departmentSummaryData: this.state.departmentSummaryDataCopy,
+      },
+      () => {
+        this.sortByPercentageAllocated();
+      }
+    );
+  };
+  filterChart = () => {
+    let data = this.state.departmentSummaryDataCopy;
+    data = data.filter((eachData) => {
+      return (
+        this.state.filterValues.indexOf(eachData["Ministries/Departments"]) !=
+        -1
+      );
+    });
+    this.setState(
+      {
+        departmentSummaryData: data,
+        start: 0,
+        end: this.state.filterValues.length - 1,
+      },
+      () => {
+        this.renderDataForBarChart();
+      }
+    );
+  };
   render() {
     return (
       <div>
@@ -375,7 +462,7 @@ class AllDepartmentsVisual extends React.Component {
                     fontFamily: "Open Sans",
                     fontWeight: "font-weight",
                     color: "#515B5E",
-                    marginTop: "10px"
+                    marginTop: "10px",
                   }}
                 >
                   <u>Brief Insights:</u>
@@ -446,28 +533,70 @@ class AllDepartmentsVisual extends React.Component {
                 color: "#515B5E",
               }}
             >
-              Expenditure Budget of Ministries/Departments
-              &nbsp;&nbsp; {
-                this.state.sortOrder == null ? <Tag color="success">Sorted by Percentage Allocated</Tag> : <Tag color="processing">Sorted by Percentage Increase/Decrease</Tag>
-              }
+              Expenditure Budget of Ministries/Departments &nbsp;&nbsp;
+              {this.state.sortOrder == null ? (
+                <Tag color="success">Sorted by Percentage Allocated</Tag>
+              ) : (
+                <Tag color="processing">
+                  Sorted by Percentage Increase/Decrease
+                </Tag>
+              )}
             </h1>
-            <p  style={{
+            <Row style={{ marginBottom: "20px" }}>
+              <Col span={16}>
+                <Select
+                  mode="multiple"
+                  style={{ width: "800px" }}
+                  placeholder="Select Ministry/Department..."
+                  value={this.state.filterValues}
+                  onChange={this.handleChangeOfFilter}
+                  options={this.state.filterObject}
+                />
+              </Col>
+              <Col span={1}></Col>
+              <Col span={2}>
+                <Button onClick={this.filterChart} type="info">
+                  {this.state.filterStatus}
+                </Button>
+              </Col>
+              <Col span={2}>
+                <Button onClick={this.clearFilter} type="danger">
+                  Clear Filter
+                </Button>
+              </Col>
+              <Col span={3}></Col>
+            </Row>
+            {/* <p  style={{
                 fontFamily: "Open Sans",
                 fontWeight: "font-weight",
                 color: "#515B5E",
-              }}>Hover over the bar graph to know details of the department/ministry</p>
-          <div style={{float: "right" , display: "block" , paddingBottom: "20px"}}>
-          <Button onClick={this.sortByPercentageIncrease} style={{display: "inline"}}  type={this.state.sortOrder != null ? "primary" : ""} >
+              }}>Hover over the bar graph to know details of the department/ministry</p> */}
+            <div
+              style={{
+                float: "right",
+                display: "block",
+                paddingBottom: "20px",
+              }}
+            >
+              <Button
+                onClick={this.sortByPercentageIncrease}
+                style={{ display: "inline" }}
+                type={this.state.sortOrder != null ? "primary" : ""}
+              >
                 Sort by percentage increase
               </Button>
               &nbsp;
-              <Button onClick={this.sortByPercentageAllocated} style={{display: "inline"}} type={this.state.sortOrder == null ? "primary" : ""}>
+              <Button
+                onClick={this.sortByPercentageAllocated}
+                style={{ display: "inline" }}
+                type={this.state.sortOrder == null ? "primary" : ""}
+              >
                 Sort by percentage allocated
               </Button>
             </div>
             <Row style={{ marginTop: "30px" }}>
               <Col span={12}>
-              <br/>
+                <br />
 
                 <BarChart
                   width={1150}
@@ -483,38 +612,39 @@ class AllDepartmentsVisual extends React.Component {
                   <CartesianGrid strokeDasharray="9 9" />
                   <XAxis dataKey="name" />
                   <YAxis />
-                  <Tooltip content={<CustomTooltip />} />
+
                   <Legend />
                   <ReferenceLine y={0} stroke="#000" />
                   {/* <Bar dataKey="percentageChange" fill="#82ca9d" /> */}
+
+                  {this.state.sortOrder == null ? (
+                  <Tooltip content={<CustomTooltip />} />
+                  ) : (
+                    <Tooltip content={<CustomTooltipSorted />} />
+                  )}
                   {this.state.sortOrder == null ? (
                     <Bar dataKey="Budget 2020" fill="#03ab97" />
                   ) : (
-                    <Bar dataKey="Increase/Decrease by " fill="#8884d8" />
+                      <Bar dataKey="Increase/Decrease by " fill="#8884d8" />
                   )}
                 </BarChart>
               </Col>
-         
-             
             </Row>
-            <Row style={{marginTop: "20px" , marginBottom: "20px"}}>
-              <Col span={8}>
-
-              </Col>
+            <Row style={{ marginTop: "20px", marginBottom: "20px" }}>
+              <Col span={8}></Col>
               <Col span={2}>
-              <Button onClick={this.showPrev} >Previous</Button>
-
+                <Button onClick={this.showPrev}>Previous</Button>
               </Col>
               <Col span={4}>
-                  <p>Displaying {this.state.start} to {this.state.end} of {this.state.departmentSummaryData.length -1}</p>
+                <p>
+                  Displaying {this.state.start} to {this.state.end} of{" "}
+                  {this.state.departmentSummaryData.length - 1}
+                </p>
               </Col>
               <Col span={2}>
-              <Button onClick={this.showNext} >Next</Button>
-
+                <Button onClick={this.showNext}>Next</Button>
               </Col>
-              <Col span={8}>
-
-              </Col>
+              <Col span={8}></Col>
             </Row>
           </div>
         ) : (
