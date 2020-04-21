@@ -1,5 +1,5 @@
 <h1> Welcome to Budget Explorer 2020 v1.0</h1>
-<a href="http://budget2020.surge.sh/">Expenditure Budget Explorer 2020 v1.0 Dashboard </a>
+<a href="https://budget2020.netlify.app/">Expenditure Budget Explorer 2020 v1.0 Dashboard </a>
 <h3>A brief about Union Budget 2020</h3>
 <p>Every year all the departments of our governemnt creates a budget for the nation. Now there are two parts to it: 
 <ul>
