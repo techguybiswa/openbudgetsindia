@@ -1,9 +1,10 @@
 import React from "react";
-import { Table, Tag, Button, Row, Col, Divider } from "antd";
+import { Table, Tag, Button, Row, Col, Divider,Switch } from "antd";
 import { Select, Typography, Modal, Statistic } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 import DepartmentSummaryVisual from "./DepartmentSummaryVisual";
 import DepartmentVisual from "./DepartmentVisual";
+import ScatterAllDepartment from "./ScatterAllDepartment"
 import {
   BarChart,
   Bar,
@@ -83,6 +84,8 @@ class AllDepartmentsVisual extends React.Component {
       filterObject: null,
       filterValues: [],
       filterStatus: "Filter",
+      switch: 0,
+      switchText: "Scatter Chart"
     };
   }
 
@@ -415,6 +418,11 @@ class AllDepartmentsVisual extends React.Component {
       }
     );
   };
+  switch = () => {
+    this.setState({
+      switch : !this.state.switch
+    })
+  }
   render() {
     return (
       <div>
@@ -542,6 +550,7 @@ class AllDepartmentsVisual extends React.Component {
                 </Tag>
               )}
             </h1>
+           
             <Row style={{ marginBottom: "20px" }}>
               <Col span={16}>
                 <Select
@@ -561,21 +570,29 @@ class AllDepartmentsVisual extends React.Component {
               </Col>
               <Col span={2}>
                 <Button onClick={this.clearFilter} type="danger">
-                  Clear Filter
+                  Clear
                 </Button>
               </Col>
-              <Col span={3}></Col>
+              <Col span={3}>
+              <Button onClick={this.switch} type="info">
+                  {this.state.switch == 0 ? "Scatter Chart" : "Bar Chart"}
+                </Button>
+              </Col>
             </Row>
             {/* <p  style={{
                 fontFamily: "Open Sans",
                 fontWeight: "font-weight",
                 color: "#515B5E",
               }}>Hover over the bar graph to know details of the department/ministry</p> */}
-            <div
+               {
+                 this.state.switch == 1 ? <Row>
+                 <ScatterAllDepartment data={this.state.departmentSummaryData}/>
+               </Row> : (<div>
+                <div
               style={{
                 float: "right",
                 display: "block",
-                paddingBottom: "20px",
+                paddingBottom: "30px",
               }}
             >
               <Button
@@ -594,9 +611,11 @@ class AllDepartmentsVisual extends React.Component {
                 Sort by percentage allocated
               </Button>
             </div>
-            <Row style={{ marginTop: "30px" }}>
+            <Row style={{ marginTop: "40px" }}>
               <Col span={12}>
                 <br />
+                <br />
+
 
                 <BarChart
                   width={1150}
@@ -615,7 +634,6 @@ class AllDepartmentsVisual extends React.Component {
 
                   <Legend />
                   <ReferenceLine y={0} stroke="#000" />
-                  {/* <Bar dataKey="percentageChange" fill="#82ca9d" /> */}
 
                   {this.state.sortOrder == null ? (
                   <Tooltip content={<CustomTooltip />} />
@@ -646,6 +664,11 @@ class AllDepartmentsVisual extends React.Component {
               </Col>
               <Col span={8}></Col>
             </Row>
+               </div>
+
+               )
+               }
+           
           </div>
         ) : (
           "Loading...."
