@@ -49,17 +49,6 @@ const CustomTooltipTreeMap = ({ active, payload, label }) => {
           INR {payload[0].payload.size.toFixed(2)} for{" "}
           {payload[0].payload.fullName}
         </Tag>
-
-        {/* <p className="label">{`${label} : ${payload[0].value}`}</p>
-
-        <p className="label">
-          Percentage Change: {`${payload[0].payload["Increase/Decrease by "]}`}
-        </p>
-        <p className="label">
-          Percentage Allocated:{" "}
-          {`${payload[0].payload["Percentage Allocated"]}`}
-        </p> */}
-        {/* <p className="desc">Anything you want can be displayed here.</p> */}
       </div>
     );
   }
@@ -70,7 +59,7 @@ const CustomTooltipTreeMap = ({ active, payload, label }) => {
 const CustomTooltip = ({ active, payload, label }) => {
   if (active) {
     return (
-      <div className="custom-tooltip">
+      <div className="custom-tooltip" style={{padding: "10px", border: "1px solid black"}}>
         <p className="label">{`${label} : ${payload[0].value}`}</p>
 
         <p className="label">
@@ -80,7 +69,6 @@ const CustomTooltip = ({ active, payload, label }) => {
           Percentage Allocated:{" "}
           {`${payload[0].payload["Percentage Allocated"]}`}
         </p>
-        {/* <p className="desc">Anything you want can be displayed here.</p> */}
       </div>
     );
   }
@@ -91,7 +79,7 @@ const CustomTooltipSorted = ({ active, payload, label }) => {
   if (active) {
     console.log(payload);
     return (
-      <div className="custom-tooltip">
+      <div className="custom-tooltip" style={{padding: "10px", border: "1px solid black"}}>
         <p className="label">{`${label} : ${payload[0].payload["Budget 2020"]}`}</p>
 
         <p className="label">
@@ -101,7 +89,6 @@ const CustomTooltipSorted = ({ active, payload, label }) => {
           Percentage Allocated:{" "}
           {`${payload[0].payload["Percentage Allocated"]}`}
         </p>
-        <p className="desc">Anything you want can be displayed here.</p>
       </div>
     );
   }

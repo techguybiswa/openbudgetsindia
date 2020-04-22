@@ -104,6 +104,8 @@ class DataVisual extends React.Component {
               <Tooltip />
               <Legend />
               <Bar dataKey="Amount" fill="#8884d8" />
+              <Bar dataKey="AmountRevised" fill="green" />
+
             </BarChart>
           </Row>
           {this.props.record != null ? (

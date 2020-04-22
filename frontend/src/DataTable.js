@@ -99,11 +99,13 @@ class DataTable extends React.Component {
       {
         name: "Budget 2019-2020 Total",
         Amount: record["Budget 2019-2020 Total"],
+        AmountRevised: record["Revised 2019-2020 Total"],
+
       },
-      {
-        name: "Revised 2019-2020 Total",
-        Amount: record["Revised 2019-2020 Total"],
-      },
+      // {
+      //   name: "Revised 2019-2020 Total",
+      //   AmountRevised: record["Revised 2019-2020 Total"],
+      // },
       {
         name: "Budget 2020-2021 Total",
         Amount: record["Budget 2020-2021 Total"],
