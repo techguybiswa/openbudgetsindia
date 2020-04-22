@@ -1,10 +1,11 @@
 import React from "react";
-import { Table, Tag, Button, Row, Col, Divider,Switch } from "antd";
+import { Table, Tag, Button, Row, Col, Divider, Switch, Card } from "antd";
 import { Select, Typography, Modal, Statistic } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 import DepartmentSummaryVisual from "./DepartmentSummaryVisual";
 import DepartmentVisual from "./DepartmentVisual";
-import ScatterAllDepartment from "./ScatterAllDepartment"
+
+import ScatterAllDepartment from "./ScatterAllDepartment";
 import {
   BarChart,
   Bar,
@@ -17,14 +18,54 @@ import {
   AreaChart,
   Area,
   ReferenceLine,
+  Treemap,
 } from "recharts";
 import { PieChart, Pie, Sector } from "recharts";
 import { LineChart, Line } from "recharts";
 const { Option } = Select;
 
 const { Title } = Typography;
+const COLORS = [
+  "#8889DD",
+  "#9597E4",
+  "#8DC77B",
+  "#A5D297",
+  "#E2CF45",
+  "#F8C12D",
+];
 
 const { Column, ColumnGroup } = Table;
+
+const CustomTooltipTreeMap = ({ active, payload, label }) => {
+  if (active) {
+    console.log(payload);
+    return (
+      <div
+        className="custom-tooltip"
+        style={{ padding: "10px", border: "apx solid black" }}
+      >
+        {/* <p>  </p> */}
+        <Tag color="geekblue">
+          INR {payload[0].payload.size.toFixed(2)} for{" "}
+          {payload[0].payload.fullName}
+        </Tag>
+
+        {/* <p className="label">{`${label} : ${payload[0].value}`}</p>
+
+        <p className="label">
+          Percentage Change: {`${payload[0].payload["Increase/Decrease by "]}`}
+        </p>
+        <p className="label">
+          Percentage Allocated:{" "}
+          {`${payload[0].payload["Percentage Allocated"]}`}
+        </p> */}
+        {/* <p className="desc">Anything you want can be displayed here.</p> */}
+      </div>
+    );
+  }
+
+  return null;
+};
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active) {
@@ -48,19 +89,19 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 const CustomTooltipSorted = ({ active, payload, label }) => {
   if (active) {
-    console.log(payload)
+    console.log(payload);
     return (
       <div className="custom-tooltip">
         <p className="label">{`${label} : ${payload[0].payload["Budget 2020"]}`}</p>
 
-         <p className="label">
+        <p className="label">
           Percentage Change: {`${payload[0].payload["Increase/Decrease by "]}`}
         </p>
         <p className="label">
           Percentage Allocated:{" "}
           {`${payload[0].payload["Percentage Allocated"]}`}
-        </p> 
-         <p className="desc">Anything you want can be displayed here.</p>
+        </p>
+        <p className="desc">Anything you want can be displayed here.</p>
       </div>
     );
   }
@@ -85,7 +126,7 @@ class AllDepartmentsVisual extends React.Component {
       filterValues: [],
       filterStatus: "Filter",
       switch: 0,
-      switchText: "Scatter Chart"
+      switchText: "Scatter Chart",
     };
   }
 
@@ -107,55 +148,73 @@ class AllDepartmentsVisual extends React.Component {
     const { departmentSummaryData } = this.state;
     const pieChartData = [
       {
-        name: "Repayment of loans",
-        value: departmentSummaryData[1]["Percentage of Budget"],
+        name: `Repaying loans`,
+        fullName: "Repaying loans",
+        size: departmentSummaryData[1]["Percentage of Budget"],
       },
       {
-        name: "Defence services and military",
-        value: departmentSummaryData[2]["Percentage of Budget"],
+        name: "Defence",
+        fullName: "Defence services (Revenue)",
+        size: departmentSummaryData[2]["Percentage of Budget"],
       },
       {
-        name: "Transfered to the states",
-        value: departmentSummaryData[3]["Percentage of Budget"],
+        name: "State Transfer",
+        fullName: "Transfer to states",
+        size: departmentSummaryData[3]["Percentage of Budget"],
       },
       {
-        name: "Department of Revenue",
-        value: departmentSummaryData[4]["Percentage of Budget"],
-      },
-
-      {
-        name: "For agriculture and farmers",
-        value: departmentSummaryData[5]["Percentage of Budget"],
-      },
-      {
-        name: "Paying pensions for Defence people",
-        value: departmentSummaryData[6]["Percentage of Budget"],
-      },
-      {
-        name: "For public distribution of food",
-        value: departmentSummaryData[7]["Percentage of Budget"],
+        name: "Revenue",
+        fullName: "Department of Revenue",
+        size: departmentSummaryData[4]["Percentage of Budget"],
       },
 
       {
-        name: "Capital Outlay of devence",
-        value: departmentSummaryData[9]["Percentage of Budget"],
+        name: "Agriculture",
+        fullName: "Department of Agriculture, Cooperation and Farmers' Welfare",
+        size: departmentSummaryData[5]["Percentage of Budget"],
       },
       {
-        name: "For the Police department",
-        value: departmentSummaryData[10]["Percentage of Budget"],
+        name: "Pension",
+        fullName: "Defence Pension",
+        size: departmentSummaryData[6]["Percentage of Budget"],
       },
       {
-        name: "For Roads and transport",
-        value: departmentSummaryData[11]["Percentage of Budget"],
+        name: "Foods",
+        fullName: " Public distribution of food",
+        size: departmentSummaryData[7]["Percentage of Budget"],
       },
       {
-        name: "For Railways",
-        value: departmentSummaryData[12]["Percentage of Budget"],
+        name: "Rural",
+        fullName: "Department of Rural Development",
+        size: departmentSummaryData[8]["Percentage of Budget"],
       },
 
       {
-        name: "Others departments and ministries",
-        value: this.getRemainingBudget(),
+        name: "Defence",
+        fullName: "Capital Outlay on Defence Services",
+        size: departmentSummaryData[9]["Percentage of Budget"],
+      },
+      {
+        name: "Police",
+        fullName: " The Police department",
+        size: departmentSummaryData[10]["Percentage of Budget"],
+      },
+      {
+        name: "Transport",
+        fullName: " Roads and transport",
+        size: departmentSummaryData[11]["Percentage of Budget"],
+      },
+      {
+        name: "Rail",
+        fullName: "Railways",
+        size: departmentSummaryData[12]["Percentage of Budget"],
+      },
+
+      {
+        name: "Others",
+        fullName: "Other departments and ministries",
+
+        size: this.getRemainingBudget(),
       },
     ];
     this.setState({
@@ -270,9 +329,7 @@ class AllDepartmentsVisual extends React.Component {
     let differencePercentage = (Math.abs(difference) / previousYear) * 100;
 
     if (difference > 0) {
-      return `has increased by  ${differencePercentage.toFixed(
-        3
-      )}% which amounts to ${difference.toFixed(3)} crores`;
+      return differencePercentage;
     } else if (difference < 0) {
       return `has decreased by ${differencePercentage.toFixed(
         3
@@ -400,6 +457,12 @@ class AllDepartmentsVisual extends React.Component {
     );
   };
   filterChart = () => {
+    if (this.state.filterValues.length == 0) {
+      return;
+    }
+    this.setState({
+      filterStatus: "Filtering...",
+    });
     let data = this.state.departmentSummaryDataCopy;
     data = data.filter((eachData) => {
       return (
@@ -412,6 +475,7 @@ class AllDepartmentsVisual extends React.Component {
         departmentSummaryData: data,
         start: 0,
         end: this.state.filterValues.length - 1,
+        filterStatus: "Filter",
       },
       () => {
         this.renderDataForBarChart();
@@ -420,9 +484,9 @@ class AllDepartmentsVisual extends React.Component {
   };
   switch = () => {
     this.setState({
-      switch : !this.state.switch
-    })
-  }
+      switch: !this.state.switch,
+    });
+  };
   render() {
     return (
       <div>
@@ -465,40 +529,47 @@ class AllDepartmentsVisual extends React.Component {
 
             {this.state.totalBudget != null ? (
               <div>
-                <h3
+                <div
                   style={{
-                    fontFamily: "Open Sans",
-                    fontWeight: "font-weight",
-                    color: "#515B5E",
-                    marginTop: "10px",
-                  }}
-                >
-                  <u>Brief Insights:</u>
-                </h3>
-                <h4
-                  style={{
-                    fontFamily: "Open Sans",
-                    fontWeight: "font-weight",
-                    color: "#515B5E",
-                  }}
-                >
-                  > This year the budget is INR{" "}
-                  {this.state.totalBudget[
-                    "Budget Estimates 2020-2021 Total"
-                  ].toFixed(3)}{" "}
-                  crores
-                </h4>
+                    backgroundColor: "#ececec",
+                    padding: "10px",
+                    marginLeft: "30px",
+                    marginRight :"40px",
+                    marginTop :"10px",
 
-                <h4
-                  style={{
-                    fontFamily: "Open Sans",
-                    fontWeight: "font-weight",
-                    color: "#515B5E",
                   }}
                 >
-                  > The budget of 2020-21 {this.getCurrentYearSummary()} as
-                  compared to the past year
-                </h4>
+                  <Row>
+                    <Col span={14}>
+                      <Card>
+                        <Statistic
+                          title="Budget 2020-21"
+                          value={
+                            this.state.totalBudget[
+                              "Budget Estimates 2020-2021 Total"
+                            ]
+                          }
+                          precision={0}
+                          valueStyle={{ color: "#3f8600" }}
+                          suffix="CRORE"
+                        />
+                      </Card>
+                    </Col>
+                    <Col span={10}>
+                      <Card>
+                        <Statistic
+                          title="Percentage"
+                          value={this.getCurrentYearSummary()}
+                          precision={2}
+                          valueStyle={{ color: "#3f8600" }}
+                          prefix={<ArrowUpOutlined />}
+                          suffix="%"
+                        />
+                      </Card>
+                    </Col>
+                  </Row>
+                </div>
+
                 {/* <h4>> The budget for {this.props.departmentSummaryData["Ministries/Departments"]} accounts for {((this.props.departmentSummaryData["Budget Estimates 2020-2021 Total"]/3042230)*100).toFixed(3)} % of the the toal budget </h4> */}
               </div>
             ) : (
@@ -515,19 +586,20 @@ class AllDepartmentsVisual extends React.Component {
             >
               How government spends every 100 INR from the budget?
             </h1>
-            <PieChart width={400} height={400} style={{ marginTop: "-70px" }}>
-              <Pie
-                dataKey="value"
-                isAnimationActive={true}
-                data={this.state.pieChartData}
-                cx={200}
-                cy={200}
-                outerRadius={100}
-                fill="#8884d8"
-                label
-              />
-              <Tooltip />
-            </PieChart>
+            <br/>
+            <br/>
+
+            <Treemap
+              width={550}
+              height={250}
+              data={this.state.pieChartData}
+              dataKey="size"
+              ratio={4 / 3}
+              stroke="#fff"
+              fill="#8884d8"
+            >
+              <Tooltip content={<CustomTooltipTreeMap />} />
+            </Treemap>
           </Col>
         </Row>
         <Divider />
@@ -550,7 +622,7 @@ class AllDepartmentsVisual extends React.Component {
                 </Tag>
               )}
             </h1>
-           
+
             <Row style={{ marginBottom: "20px" }}>
               <Col span={16}>
                 <Select
@@ -574,7 +646,7 @@ class AllDepartmentsVisual extends React.Component {
                 </Button>
               </Col>
               <Col span={3}>
-              <Button onClick={this.switch} type="info">
+                <Button onClick={this.switch} type="info">
                   {this.state.switch == 0 ? "Scatter Chart" : "Bar Chart"}
                 </Button>
               </Col>
@@ -584,91 +656,89 @@ class AllDepartmentsVisual extends React.Component {
                 fontWeight: "font-weight",
                 color: "#515B5E",
               }}>Hover over the bar graph to know details of the department/ministry</p> */}
-               {
-                 this.state.switch == 1 ? <Row>
-                 <ScatterAllDepartment data={this.state.departmentSummaryData}/>
-               </Row> : (<div>
+            {this.state.switch == 1 ? (
+              <Row>
+                <ScatterAllDepartment data={this.state.departmentSummaryData} />
+              </Row>
+            ) : (
+              <div>
                 <div
-              style={{
-                float: "right",
-                display: "block",
-                paddingBottom: "30px",
-              }}
-            >
-              <Button
-                onClick={this.sortByPercentageIncrease}
-                style={{ display: "inline" }}
-                type={this.state.sortOrder != null ? "primary" : ""}
-              >
-                Sort by percentage increase
-              </Button>
-              &nbsp;
-              <Button
-                onClick={this.sortByPercentageAllocated}
-                style={{ display: "inline" }}
-                type={this.state.sortOrder == null ? "primary" : ""}
-              >
-                Sort by percentage allocated
-              </Button>
-            </div>
-            <Row style={{ marginTop: "40px" }}>
-              <Col span={12}>
-                <br />
-                <br />
-
-
-                <BarChart
-                  width={1150}
-                  height={300}
-                  data={this.state.barChartData}
-                  margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
+                  style={{
+                    float: "right",
+                    display: "block",
+                    paddingBottom: "30px",
                   }}
                 >
-                  <CartesianGrid strokeDasharray="9 9" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
+                  <Button
+                    onClick={this.sortByPercentageIncrease}
+                    style={{ display: "inline" }}
+                    type={this.state.sortOrder != null ? "primary" : ""}
+                  >
+                    Sort by percentage increase
+                  </Button>
+                  &nbsp;
+                  <Button
+                    onClick={this.sortByPercentageAllocated}
+                    style={{ display: "inline" }}
+                    type={this.state.sortOrder == null ? "primary" : ""}
+                  >
+                    Sort by percentage allocated
+                  </Button>
+                </div>
+                <Row style={{ marginTop: "40px" }}>
+                  <Col span={12}>
+                    <br />
+                    <br />
 
-                  <Legend />
-                  <ReferenceLine y={0} stroke="#000" />
+                    <BarChart
+                      width={1150}
+                      height={300}
+                      data={this.state.barChartData}
+                      margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                      }}
+                    >
+                      <CartesianGrid strokeDasharray="9 9" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
 
-                  {this.state.sortOrder == null ? (
-                  <Tooltip content={<CustomTooltip />} />
-                  ) : (
-                    <Tooltip content={<CustomTooltipSorted />} />
-                  )}
-                  {this.state.sortOrder == null ? (
-                    <Bar dataKey="Budget 2020" fill="#03ab97" />
-                  ) : (
-                      <Bar dataKey="Increase/Decrease by " fill="#8884d8" />
-                  )}
-                </BarChart>
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "20px", marginBottom: "20px" }}>
-              <Col span={8}></Col>
-              <Col span={2}>
-                <Button onClick={this.showPrev}>Previous</Button>
-              </Col>
-              <Col span={4}>
-                <p>
-                  Displaying {this.state.start} to {this.state.end} of{" "}
-                  {this.state.departmentSummaryData.length - 1}
-                </p>
-              </Col>
-              <Col span={2}>
-                <Button onClick={this.showNext}>Next</Button>
-              </Col>
-              <Col span={8}></Col>
-            </Row>
-               </div>
+                      <Legend />
+                      <ReferenceLine y={0} stroke="#000" />
 
-               )
-               }
-           
+                      {this.state.sortOrder == null ? (
+                        <Tooltip content={<CustomTooltip />} />
+                      ) : (
+                        <Tooltip content={<CustomTooltipSorted />} />
+                      )}
+                      {this.state.sortOrder == null ? (
+                        <Bar dataKey="Budget 2020" fill="#03ab97" />
+                      ) : (
+                        <Bar dataKey="Increase/Decrease by " fill="#8884d8" />
+                      )}
+                    </BarChart>
+                  </Col>
+                </Row>
+                <Row style={{ marginTop: "20px", marginBottom: "20px" }}>
+                  <Col span={8}></Col>
+                  <Col span={2}>
+                    <Button onClick={this.showPrev}>Previous</Button>
+                  </Col>
+                  <Col span={4}>
+                    <p>
+                      Displaying {this.state.start} to {this.state.end} of{" "}
+                      {this.state.departmentSummaryData.length - 1}
+                    </p>
+                  </Col>
+                  <Col span={2}>
+                    <Button onClick={this.showNext}>Next</Button>
+                  </Col>
+                  <Col span={8}></Col>
+                </Row>
+              </div>
+            )}
           </div>
         ) : (
           "Loading...."

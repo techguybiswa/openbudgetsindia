@@ -32,8 +32,11 @@ class DataTable extends React.Component {
     let mapOfDepartments = {};
     for (var i = 0; i < data.length; i++) {
       let tmp = data[i];
+      let tmpHead = data[i]
       let nameOfDepartment = tmp["Ministries/Departments"];
+      let nameOfHeadOfDepartment = tmp["Detailed Head of Expenditure"]
       mapOfDepartments[nameOfDepartment] = true;
+      mapOfDepartments[nameOfHeadOfDepartment] = true
     }
     console.log("mapOfDepartments", mapOfDepartments);
     let filterObject = [];
@@ -69,7 +72,7 @@ class DataTable extends React.Component {
     });
     let sortedValue = this.state.departmentData.filter((eachRow) => {
       return (
-        this.state.filterValues.indexOf(eachRow["Ministries/Departments"]) != -1
+        this.state.filterValues.indexOf(eachRow["Ministries/Departments"]) != -1 || this.state.filterValues.indexOf(eachRow["Detailed Head of Expenditure"]) != -1 
       );
     });
     this.setState({
