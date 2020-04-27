@@ -17,7 +17,7 @@ const { Title } = Typography;
 
 const { Column, ColumnGroup } = Table;
 
-class DataVisual extends React.Component {
+class DepartmentVisual extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -131,4 +131,4 @@ class DataVisual extends React.Component {
   }
 }
 
-export default DataVisual;
+export default DepartmentVisual;

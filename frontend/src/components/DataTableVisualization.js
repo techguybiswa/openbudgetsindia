@@ -4,6 +4,7 @@ import { Select, Typography, Divider, Modal, Statistic } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 import DepartmentSummaryVisual from "./DepartmentSummaryVisual";
 import DepartmentVisual from "./DepartmentVisual";
+import { fetchSummaryOfEachDepartment } from "../utils/api";
 import {
   BarChart,
   Bar,
@@ -20,13 +21,13 @@ const { Title } = Typography;
 
 const { Column, ColumnGroup } = Table;
 
-class DataVisual extends React.Component {
+class DataTableVisualization extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       chartData: null,
       departmentSummaryData: null,
-      chartDataForSummary: null
+      chartDataForSummary: null,
     };
   }
 
@@ -37,8 +38,8 @@ class DataVisual extends React.Component {
   handleCancel = (e) => {
     this.props.hideDataModal();
     this.setState({
-        departmentSummaryData: null
-    })
+      departmentSummaryData: null,
+    });
   };
 
   componentDidMount = async () => {
@@ -46,42 +47,42 @@ class DataVisual extends React.Component {
   };
 
   showSummaryOfDepartment = async () => {
-    let departmentSummaryData = await fetch(
-      `https://bisso1998.pythonanywhere.com///department/` +
-        this.props.record["Ministries/Departments"]
-    ).then((response) => response.json());
+    let departmentSummaryData = await fetchSummaryOfEachDepartment(
+      this.props.record["Ministries/Departments"]
+    );
     console.log("departmentSummaryData", departmentSummaryData);
     let chartDataForSummary = [
-        {
-            name: "2016-2017", 
-            "Capital": departmentSummaryData["Actuals 2016-2017 Capital"], 
-            "Revenue": departmentSummaryData["Actuals 2016-2017 Revenue"], 
-            "Total": departmentSummaryData["Actuals 2016-2017 Total"],
-        },
-        {
-        name: "2017-2018", 
-        "Capital": departmentSummaryData["Budget Estimates 2017-2018 Capital"], 
-        "Revenue": departmentSummaryData["Budget Estimates 2017-2018 Revenue"], 
-        "Total": departmentSummaryData["Budget Estimates 2017-2018 Total"],
-    },
-    {
-        name: "2018-2019", 
-        "Capital": departmentSummaryData["Budget Estimates 2018-2019 Capital"], 
-        "Revenue": departmentSummaryData["Budget Estimates 2018-2019 Revenue"], 
-        "Total": departmentSummaryData["Budget Estimates 2018-2019 Total"],
-    },
-    {
-        name: "2019-2020", 
-        "Total": departmentSummaryData["Budget Estimates 2019-2020 Total"],
-    },
-    {
-        name: "2020-2021", 
-        "Total": departmentSummaryData["Budget Estimates 2020-2021 Total"],
-    }]
+      {
+        name: "2016-2017",
+        Capital: departmentSummaryData["Actuals 2016-2017 Capital"],
+        Revenue: departmentSummaryData["Actuals 2016-2017 Revenue"],
+        Total: departmentSummaryData["Actuals 2016-2017 Total"],
+      },
+      {
+        name: "2017-2018",
+        Capital: departmentSummaryData["Budget Estimates 2017-2018 Capital"],
+        Revenue: departmentSummaryData["Budget Estimates 2017-2018 Revenue"],
+        Total: departmentSummaryData["Budget Estimates 2017-2018 Total"],
+      },
+      {
+        name: "2018-2019",
+        Capital: departmentSummaryData["Budget Estimates 2018-2019 Capital"],
+        Revenue: departmentSummaryData["Budget Estimates 2018-2019 Revenue"],
+        Total: departmentSummaryData["Budget Estimates 2018-2019 Total"],
+      },
+      {
+        name: "2019-2020",
+        Total: departmentSummaryData["Budget Estimates 2019-2020 Total"],
+      },
+      {
+        name: "2020-2021",
+        Total: departmentSummaryData["Budget Estimates 2020-2021 Total"],
+      },
+    ];
 
     this.setState({
       departmentSummaryData,
-      chartDataForSummary
+      chartDataForSummary,
     });
   };
   render() {
@@ -125,4 +126,4 @@ class DataVisual extends React.Component {
   }
 }
 
-export default DataVisual;
+export default DataTableVisualization;

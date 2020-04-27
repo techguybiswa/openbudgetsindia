@@ -4,7 +4,10 @@ import { Select, Typography, Modal, Statistic } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 import DepartmentSummaryVisual from "./DepartmentSummaryVisual";
 import DepartmentVisual from "./DepartmentVisual";
-
+import {
+  fetchDepartmentSummaryData,
+  fetchBudgetGrandTotal,
+} from "../utils/api";
 import ScatterAllDepartment from "./ScatterAllDepartment";
 import {
   BarChart,
@@ -25,14 +28,6 @@ import { LineChart, Line } from "recharts";
 const { Option } = Select;
 
 const { Title } = Typography;
-const COLORS = [
-  "#8889DD",
-  "#9597E4",
-  "#8DC77B",
-  "#A5D297",
-  "#E2CF45",
-  "#F8C12D",
-];
 
 const { Column, ColumnGroup } = Table;
 
@@ -59,7 +54,10 @@ const CustomTooltipTreeMap = ({ active, payload, label }) => {
 const CustomTooltip = ({ active, payload, label }) => {
   if (active) {
     return (
-      <div className="custom-tooltip" style={{padding: "10px", border: "1px solid black"}}>
+      <div
+        className="custom-tooltip"
+        style={{ padding: "10px", border: "1px solid black" }}
+      >
         <p className="label">{`${label} : ${payload[0].value}`}</p>
 
         <p className="label">
@@ -79,7 +77,10 @@ const CustomTooltipSorted = ({ active, payload, label }) => {
   if (active) {
     console.log(payload);
     return (
-      <div className="custom-tooltip" style={{padding: "10px", border: "1px solid black"}}>
+      <div
+        className="custom-tooltip"
+        style={{ padding: "10px", border: "1px solid black" }}
+      >
         <p className="label">{`${label} : ${payload[0].payload["Budget 2020"]}`}</p>
 
         <p className="label">
@@ -209,9 +210,7 @@ class AllDepartmentsVisual extends React.Component {
     });
   };
   showSummaryOfDepartment = async () => {
-    let departmentSummaryData = await fetch(
-      `https://bisso1998.pythonanywhere.com///departments-summary`
-    ).then((response) => response.json());
+    let departmentSummaryData = await fetchDepartmentSummaryData();
     console.log("departmentSummaryData", departmentSummaryData);
     this.setState({
       departmentSummaryData,
@@ -295,10 +294,7 @@ class AllDepartmentsVisual extends React.Component {
     });
   };
   fetchTotalBudgetData = async () => {
-    let totalBudget = await fetch(
-      `https://bisso1998.pythonanywhere.com///total-budget`
-    ).then((response) => response.json());
-    console.log("totalBudget", totalBudget);
+    let totalBudget = await fetchBudgetGrandTotal();
     this.setState({
       totalBudget,
     });
@@ -521,9 +517,8 @@ class AllDepartmentsVisual extends React.Component {
                     backgroundColor: "#ececec",
                     padding: "10px",
                     marginLeft: "30px",
-                    marginRight :"40px",
-                    marginTop :"10px",
-
+                    marginRight: "40px",
+                    marginTop: "10px",
                   }}
                 >
                   <Row>
@@ -573,8 +568,8 @@ class AllDepartmentsVisual extends React.Component {
             >
               How government spends every 100 INR from the budget?
             </h1>
-            <br/>
-            <br/>
+            <br />
+            <br />
 
             <Treemap
               width={550}
