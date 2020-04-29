@@ -1,0 +1,21 @@
+@media (max-width: 1000px) {
+    .filter-btn-grp {
+        margin-top: 10px;
+    }
+    .btn-sort {
+      display: block;
+        margin-bottom: 30px;
+      }
+      .barchart {
+        margin-top: 30px
+       }
+}
+
+.btn-sort {
+        float: right;
+        display: block;
+        padding-bottom: 30px;
+      }
+    .barchart {
+     margin-top: 0px
+    }

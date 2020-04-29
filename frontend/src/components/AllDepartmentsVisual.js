@@ -23,6 +23,7 @@ import {
   ReferenceLine,
   Treemap,
 } from "recharts";
+import "./style.css";
 import { PieChart, Pie, Sector } from "recharts";
 import { LineChart, Line } from "recharts";
 const { Option } = Select;
@@ -115,12 +116,22 @@ class AllDepartmentsVisual extends React.Component {
       filterStatus: "Filter",
       switch: 0,
       switchText: "Scatter Chart",
+      areaChartWidth: window.innerWidth - 0.2 * window.innerWidth,
+      barChartWidth: window.innerWidth - 0.2 * window.innerWidth,
     };
   }
 
   componentDidMount = () => {
     this.showSummaryOfDepartment();
     this.fetchTotalBudgetData();
+    window.addEventListener("resize", this.handleResize);
+
+    if (window.innerWidth > 1000) {
+      this.setState({
+        areaChartWidth: 550,
+        barChartWidth: 1150,
+      });
+    }
   };
   getRemainingBudget = () => {
     let count = 0;
@@ -470,11 +481,26 @@ class AllDepartmentsVisual extends React.Component {
       switch: !this.state.switch,
     });
   };
+  handleResize = () => {
+    if (window.innerWidth < 1000) {
+      this.setState({
+        barChartWidth: window.innerWidth - 0.2 * window.innerWidth,
+        areaChartWidth: window.innerWidth - 0.2 * window.innerWidth,
+      });
+    } else {
+      this.setState({
+        areaChartWidth: 550,
+        barChartWidth: 1150,
+      });
+    }
+
+    console.log("resizing " + window.innerWidth);
+  };
   render() {
     return (
       <div>
         <Row>
-          <Col span={12}>
+          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <h1
               style={{
                 fontFamily: "Open Sans",
@@ -485,31 +511,32 @@ class AllDepartmentsVisual extends React.Component {
               Expenditure Budget over the past years (2016-2021)
             </h1>
             <br />
-            <AreaChart
-              width={500}
-              height={200}
-              isAnimationActive={true}
-              data={this.state.lineChartData}
-              margin={{
-                top: 10,
-                right: 30,
-                left: 0,
-                bottom: 0,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="year" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Area
-                type="monotone"
-                dataKey="budget"
-                stroke="#8884d8"
-                activeDot={{ r: 8 }}
-              />
-            </AreaChart>
-
+            <div style={{ overflow: "hidden" }}>
+              <AreaChart
+                width={this.state.areaChartWidth}
+                height={200}
+                isAnimationActive={true}
+                data={this.state.lineChartData}
+                margin={{
+                  top: 10,
+                  right: 30,
+                  left: 0,
+                  bottom: 0,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="year" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Area
+                  type="monotone"
+                  dataKey="budget"
+                  stroke="#8884d8"
+                  activeDot={{ r: 8 }}
+                />
+              </AreaChart>
+            </div>
             {this.state.totalBudget != null ? (
               <div>
                 <div
@@ -522,7 +549,7 @@ class AllDepartmentsVisual extends React.Component {
                   }}
                 >
                   <Row>
-                    <Col span={14}>
+                    <Col xs={24} sm={24} md={24} lg={14} xl={14}>
                       <Card>
                         <Statistic
                           title="Budget 2020-21"
@@ -537,7 +564,7 @@ class AllDepartmentsVisual extends React.Component {
                         />
                       </Card>
                     </Col>
-                    <Col span={10}>
+                    <Col xs={24} sm={24} md={24} lg={10} xl={10}>
                       <Card>
                         <Statistic
                           title="Percentage"
@@ -558,7 +585,7 @@ class AllDepartmentsVisual extends React.Component {
               ""
             )}
           </Col>
-          <Col span={12}>
+          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <h1
               style={{
                 fontFamily: "Open Sans",
@@ -571,17 +598,19 @@ class AllDepartmentsVisual extends React.Component {
             <br />
             <br />
 
-            <Treemap
-              width={550}
-              height={250}
-              data={this.state.pieChartData}
-              dataKey="size"
-              ratio={4 / 3}
-              stroke="#fff"
-              fill="#8884d8"
-            >
-              <Tooltip content={<CustomTooltipTreeMap />} />
-            </Treemap>
+            <div style={{ overflow: "scroll" }}>
+              <Treemap
+                width={this.state.areaChartWidth}
+                height={250}
+                data={this.state.pieChartData}
+                dataKey="size"
+                ratio={4 / 3}
+                stroke="#fff"
+                fill="#8884d8"
+              >
+                <Tooltip content={<CustomTooltipTreeMap />} />
+              </Treemap>
+            </div>
           </Col>
         </Row>
         <Divider />
@@ -606,51 +635,61 @@ class AllDepartmentsVisual extends React.Component {
             </h1>
 
             <Row style={{ marginBottom: "20px" }}>
-              <Col span={16}>
+              <Col xs={24} sm={24} md={24} lg={16} xl={16}>
                 <Select
                   mode="multiple"
-                  style={{ width: "800px" }}
+                  style={{ width: "100%" }}
                   placeholder="Select Ministry/Department..."
                   value={this.state.filterValues}
                   onChange={this.handleChangeOfFilter}
                   options={this.state.filterObject}
                 />
               </Col>
-              <Col span={1}></Col>
-              <Col span={2}>
+              <Col xs={0} sm={0} md={0} lg={1} xl={1}></Col>
+              <Col
+                xs={8}
+                sm={8}
+                md={8}
+                lg={2}
+                xl={2}
+                className="filter-btn-grp"
+              >
                 <Button onClick={this.filterChart} type="info">
                   {this.state.filterStatus}
                 </Button>
               </Col>
-              <Col span={2}>
+              <Col
+                xs={8}
+                sm={8}
+                md={8}
+                lg={2}
+                xl={2}
+                className="filter-btn-grp"
+              >
                 <Button onClick={this.clearFilter} type="danger">
                   Clear
                 </Button>
               </Col>
-              <Col span={3}>
+              <Col
+                xs={8}
+                sm={8}
+                md={8}
+                lg={2}
+                xl={2}
+                className="filter-btn-grp"
+              >
                 <Button onClick={this.switch} type="info">
                   {this.state.switch == 0 ? "Scatter Chart" : "Bar Chart"}
                 </Button>
               </Col>
             </Row>
-            {/* <p  style={{
-                fontFamily: "Open Sans",
-                fontWeight: "font-weight",
-                color: "#515B5E",
-              }}>Hover over the bar graph to know details of the department/ministry</p> */}
             {this.state.switch == 1 ? (
               <Row>
                 <ScatterAllDepartment data={this.state.departmentSummaryData} />
               </Row>
             ) : (
               <div>
-                <div
-                  style={{
-                    float: "right",
-                    display: "block",
-                    paddingBottom: "30px",
-                  }}
-                >
+                <div className="btn-sort">
                   <Button
                     onClick={this.sortByPercentageIncrease}
                     style={{ display: "inline" }}
@@ -668,57 +707,78 @@ class AllDepartmentsVisual extends React.Component {
                   </Button>
                 </div>
                 <Row style={{ marginTop: "40px" }}>
-                  <Col span={12}>
+                  <Col span={24}>
                     <br />
                     <br />
 
-                    <BarChart
-                      width={1150}
-                      height={300}
-                      data={this.state.barChartData}
-                      margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5,
-                      }}
-                    >
-                      <CartesianGrid strokeDasharray="9 9" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
+                    <div className="barchart" style={{marginTop: "30px"}}>
 
-                      <Legend />
-                      <ReferenceLine y={0} stroke="#000" />
 
-                      {this.state.sortOrder == null ? (
-                        <Tooltip content={<CustomTooltip />} />
-                      ) : (
-                        <Tooltip content={<CustomTooltipSorted />} />
-                      )}
-                      {this.state.sortOrder == null ? (
-                        <Bar dataKey="Budget 2020" fill="#03ab97" />
-                      ) : (
-                        <Bar dataKey="Increase/Decrease by " fill="#8884d8" />
-                      )}
-                    </BarChart>
+                      <BarChart
+                        width={this.state.barChartWidth}
+                        height={300}
+                        data={this.state.barChartData}
+                        margin={{}}
+                      >
+                        <CartesianGrid strokeDasharray="9 9" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+
+                        <Legend />
+                        <ReferenceLine y={0} stroke="#000" />
+
+                        {this.state.sortOrder == null ? (
+                          <Tooltip content={<CustomTooltip />} />
+                        ) : (
+                          <Tooltip content={<CustomTooltipSorted />} />
+                        )}
+                        {this.state.sortOrder == null ? (
+                          <Bar dataKey="Budget 2020" fill="#03ab97" />
+                        ) : (
+                          <Bar dataKey="Increase/Decrease by " fill="#8884d8" />
+                        )}
+                      </BarChart>
+                    </div>
                   </Col>
                 </Row>
                 <Row style={{ marginTop: "20px", marginBottom: "20px" }}>
-                  <Col span={8}></Col>
-                  <Col span={2}>
+                  <Col xs={0}
+                sm={0}
+                md={0}
+                lg={8}
+                xl={8}></Col>
+                  <Col 
+                  xs={7}
+                  sm={7}
+                  md={7}
+                  lg={2}
+                  xl={2}>
                     <Button onClick={this.showPrev}>Previous</Button>
                   </Col>
-                  <Col span={4}>
+                  <Col 
+                   xs={10}
+                   sm={10}
+                   md={10}
+                   lg={4}
+                   xl={4}>
                     <p>
                       Displaying {this.state.start} to {this.state.end} of{" "}
                       {this.state.departmentSummaryData.length - 1}
                     </p>
                   </Col>
-                  <Col span={2}>
+                  <Col 
+                   xs={7}
+                   sm={7}
+                   md={7}
+                   lg={2}
+                   xl={2}>
                     <Button onClick={this.showNext}>Next</Button>
                   </Col>
-                  <Col span={8}></Col>
-                </Row>
+                  <Col xs={0}
+                sm={0}
+                md={0}
+                lg={8}
+                xl={8}></Col>                </Row>
               </div>
             )}
           </div>

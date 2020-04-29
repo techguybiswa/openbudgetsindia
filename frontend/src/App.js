@@ -1,7 +1,7 @@
 import React from "react";
 import DataTable from "./components/DataTable";
 import { Layout, Menu, Divider } from "antd";
-
+import "./App.css"
 import AllDepartmentsVisual from "./components/AllDepartmentsVisual";
 const { Header, Content, Footer } = Layout;
 class App extends React.Component {
@@ -22,8 +22,8 @@ class App extends React.Component {
         <Menu.Item key="3">nav 3</Menu.Item> */}
             </Menu>
           </Header>
-          <Content style={{ padding: "50px" }}>
-            <div style={{ backgroundColor: "white", padding: "20px" }}>
+          <Content className="content" style={{ overflow: "hidden"}}>
+            <div style={{ backgroundColor: "white", padding: "20px", }}>
               <AllDepartmentsVisual />
               <Divider />
 

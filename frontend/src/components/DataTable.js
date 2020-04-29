@@ -227,23 +227,43 @@ class DataTable extends React.Component {
             Ministries/Departments (2018-2021)
           </h1>
           <Row style={{ marginBottom: "20px" }}>
-            <Col span={10}>
+            <Col  xs={24}
+                  sm={24}
+                  md={24}
+                  lg={10}
+                  xl={10}>
               <Select
                 mode="multiple"
-                style={{ width: "500px" }}
+                style={{ width: "100%" }}
                 placeholder="Select Ministry/Department..."
                 value={this.state.filterValues}
                 onChange={this.handleChangeOfFilter}
                 options={this.state.filterObject}
               />
             </Col>
-            <Col span={1}></Col>
-            <Col span={2}>
+            <Col  xs={0}
+                  sm={0}
+                  md={0}
+                  lg={1}
+                  xl={1}></Col>
+            <Col 
+             xs={6}
+                  sm={6}
+                  md={6}
+                  lg={2}
+                  xl={2}
+                  >
               <Button onClick={this.filterTable} type="info">
                 {this.state.filterStatus}
               </Button>
             </Col>
-            <Col span={2}>
+            <Col 
+             xs={6}
+                  sm={6}
+                  md={6}
+                  lg={2}
+                  xl={2}
+                  >
               <Button onClick={this.clearFilter} type="danger">
                 Clear Filters
               </Button>
@@ -251,7 +271,7 @@ class DataTable extends React.Component {
           </Row>
 
           <Row>
-            <Col span={24}>
+            <Col span={24} style={{overflow: "scroll"}}>
               <Table
                 columns={columns}
                 dataSource={departmentData}
